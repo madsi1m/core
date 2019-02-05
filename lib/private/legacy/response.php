@@ -297,8 +297,12 @@ class OC_Response {
 			$isCorsRequest = (\is_array($allowedDomains) && \in_array($domain, $allowedDomains, true));
 		}
 		if ($isCorsRequest) {
+			$corsAllowedHeaders = $config->getSystemValue('cors.allowed-headers', []);
+			$corsAllowedHeaders = array_merge($corsAllowedHeaders, ['authorization', 'OCS-APIREQUEST', 'Origin', 'X-Requested-With', 'Content-Type', 'Access-Control-Allow-Origin', 'X-Request-ID']);
+			$corsAllowedHeaders = array_unique(array_values($corsAllowedHeaders));
+
 			// TODO: infer allowed verbs from existing known routes
-			$allHeaders['Access-Control-Allow-Headers'] = ['authorization', 'OCS-APIREQUEST', 'Origin', 'X-Requested-With', 'Content-Type', 'Access-Control-Allow-Origin', 'X-Request-ID'];
+			$allHeaders['Access-Control-Allow-Headers'] = $corsAllowedHeaders;
 			$allHeaders['Access-Control-Allow-Origin'] = [$domain];
 			$allHeaders['Access-Control-Allow-Methods'] =['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE', 'MKCOL', 'PROPFIND', 'PATCH', 'PROPPATCH', 'REPORT'];
 
@@ -326,11 +330,19 @@ class OC_Response {
 	 *     "Access-Control-Allow-Methods": ["a", "b", "c"]
 	 * ]
 	 *
+	 * @param \OCP\IConfig|null $config
 	 * @return Sabre\HTTP\ResponseInterface $response
 	 */
-	public static function setOptionsRequestHeaders($response, $headers = []) {
+	public static function setOptionsRequestHeaders($response, $headers = [], \OCP\IConfig $config = null) {
+		if ($config === null) {
+			$config = \OC::$server->getConfig();
+		}
+		$corsAllowedHeaders = $config->getSystemValue('cors.allowed-headers', []);
+		$corsAllowedHeaders = array_merge($corsAllowedHeaders, ['authorization', 'OCS-APIREQUEST', 'Origin', 'X-Requested-With', 'Content-Type', 'Access-Control-Allow-Origin', 'X-Request-ID']);
+		$corsAllowedHeaders = array_unique(array_values($corsAllowedHeaders));
+
 		// TODO: infer allowed verbs from existing known routes
-		$allHeaders['Access-Control-Allow-Headers'] = ['authorization', 'OCS-APIREQUEST', 'Origin', 'X-Requested-With', 'Content-Type', 'Access-Control-Allow-Origin', 'X-Request-ID'];
+		$allHeaders['Access-Control-Allow-Headers'] = $corsAllowedHeaders;
 		$allHeaders['Access-Control-Allow-Origin'] = ['*'];
 		$allHeaders['Access-Control-Allow-Methods'] =['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE', 'MKCOL', 'PROPFIND', 'PATCH', 'PROPPATCH', 'REPORT'];
 

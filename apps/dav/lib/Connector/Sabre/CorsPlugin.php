@@ -61,7 +61,7 @@ class CorsPlugin extends ServerPlugin {
 	private function getExtraHeaders(RequestInterface $request) {
 		if ($this->extraHeaders === null) {
 			// TODO: design a way to have plugins provide these
-			$this->extraHeaders['Access-Control-Allow-Headers'] = ['X-OC-Mtime', 'OC-Checksum', 'OC-Total-Length', 'Depth', 'Destination', 'Overwrite'];
+			$this->extraHeaders['Access-Control-Allow-Headers'] = ['X-OC-Mtime', 'OC-Checksum', 'OC-Total-Length', 'Depth', 'Destination', 'Overwrite', 'If-Match', 'If-Not-Match'];
 			if ($this->userSession->getUser() === null) {
 				$this->extraHeaders['Access-Control-Allow-Methods'] = [
 					'OPTIONS',

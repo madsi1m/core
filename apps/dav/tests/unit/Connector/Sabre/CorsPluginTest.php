@@ -88,21 +88,15 @@ class CorsPluginTest extends TestCase {
 		$allowedDomains = '["https://requesterdomain.tld", "http://anotherdomain.tld"]';
 
 		$allowedHeaders = [
-			'authorization',
-			'OCS-APIREQUEST',
-			'Origin',
-			'X-Requested-With',
-			'Content-Type',
-			'Access-Control-Allow-Origin',
-			'X-Request-ID',
-			'X-OC-Mtime',
-			'OC-Checksum',
-			'OC-Total-Length',
-			'Depth',
-			'Destination',
-			'Overwrite',
-			'If-Match',
-			'If-Not-Match'
+			'X-OC-Mtime', 'OC-Checksum', 'OC-Total-Length', 'OCS-APIREQUEST', 'Accept',
+			'Authorization', 'Brief', 'Content-Length', 'Content-Range', 'Content-type',
+			'Content-Type', 'Date', 'Depth', 'Destination', 'Host', 'If', 'If-Match',
+			'If-Modified-Since', 'If-None-Match', 'If-Range', 'If-Unmodified-Since',
+			'Location', 'Lock-Token', 'Overwrite', 'Prefer', 'Range', 'Schedule-Reply',
+			'Timeout', 'User-Agent', 'X-Expected-Entity-Length', 'Accept-Language',
+			'Access-Control-Request-Method', 'Access-Control-Allow-Origin', 'ETag',
+			'OC-Autorename', 'OC-CalDav-Import', 'OC-Chunked', 'OC-Etag', 'OC-FileId',
+			'OC-LazyOps', 'OC-Total-File-Length', 'Origin', 'X-Request-ID', 'X-Requested-With'
 		];
 		$allowedMethods = [
 			'GET',
@@ -353,7 +347,7 @@ class CorsPluginTest extends TestCase {
 		$this->server->addPlugin($this->plugin);
 
 		$this->plugin->setCorsHeaders($this->server->httpRequest, $this->server->httpResponse);
-		self::assertEquals('X-Additional-Configured-Header,authorization,OCS-APIREQUEST,Origin,X-Requested-With,Content-Type,Access-Control-Allow-Origin,X-Request-ID,X-OC-Mtime,OC-Checksum,OC-Total-Length,Depth,Destination,Overwrite,If-Match,If-Not-Match',
+		self::assertEquals('X-Additional-Configured-Header,authorization,X-OC-Mtime,OC-Checksum,OC-Total-Length,OCS-APIREQUEST,Accept,Authorization,Brief,Content-Length,Content-Range,Content-type,Content-Type,Date,Depth,Destination,Host,If,If-Match,If-Modified-Since,If-None-Match,If-Range,If-Unmodified-Since,Location,Lock-Token,Overwrite,Prefer,Range,Schedule-Reply,Timeout,User-Agent,X-Expected-Entity-Length,Accept-Language,Access-Control-Request-Method,Access-Control-Allow-Origin,ETag,OC-Autorename,OC-CalDav-Import,OC-Chunked,OC-Etag,OC-FileId,OC-LazyOps,OC-Total-File-Length,Origin,X-Request-ID,X-Requested-With',
 			$this->server->httpResponse->getHeader('Access-Control-Allow-Headers'));
 	}
 }

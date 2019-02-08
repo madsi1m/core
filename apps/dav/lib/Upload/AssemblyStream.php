@@ -113,8 +113,10 @@ class AssemblyStream implements \Icewind\Streams\File {
 	 * @return string
 	 */
 	public function stream_read($count) {
+		$failedReadCount = 0;
 		do {
 			if ($this->currentStream === null) {
+				$failedReadCount = 0;
 				list($node, $posInNode) = $this->getNodeForPosition($this->pos);
 				if ($node === null) {
 					// reached last node, no more data
@@ -133,11 +135,22 @@ class AssemblyStream implements \Icewind\Streams\File {
 				// reaching end of stream, which happens less often so strlen is ok
 				$read = \strlen($data);
 			}
+			
+			if ($read === 0) {
+				if ($failedReadCount>=10) { //10 maybe? need to test
+					\OCP\Util::writeLog('Upload/AssemblyStream', 'Reeading chunk file "'.$this->currentNode->getPath().'" failed '.$failedReadCount.' times', \OCP\Util::ERROR);
+					break;
+				}
+				//slow down the failed reads
+				sleep(1);
+				$failedReadCount++;
+			}
 
 			if (\feof($this->currentStream)) {
 				\fclose($this->currentStream);
 				$this->currentNode = null;
 				$this->currentStream = null;
+				$failedReadCount = 0;
 			}
 			// if no data read, try again with the next node because
 			// returning empty data can make the caller think there is no more

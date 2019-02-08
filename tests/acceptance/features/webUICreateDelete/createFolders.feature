@@ -17,7 +17,7 @@ Feature: create folders
     Examples:
       | folder-name       |
       | folder-!@#$%^&* ! |
-      | 😀    🤖          |
+      | 😀 🤖             |
       | नेपालि            |
 
   @smokeTest
